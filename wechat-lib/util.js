@@ -1,4 +1,5 @@
 const xml2js = require("xml2js");
+const template = require("./tpl");
 
 exports.parseXML = xml => {
   return new Promise((resolve, reject) => {
@@ -7,6 +8,30 @@ exports.parseXML = xml => {
       else resolve(content);
     });
   });
+};
+
+exports.tpl = function(content, message) {
+  let type = "text";
+
+  if (Array.isArray(content)) {
+    type = "news";
+  }
+  if (!content) content = "Empty News";
+
+  if (content && content.type) {
+    type = content.type;
+  }
+  let info = Object.assign(
+    {},
+    {
+      content: content,
+      msgType: type,
+      createTime: new Date().getTime(),
+      toUserName: message.FromUserName,
+      fromUserName: message.ToUserName
+    }
+  );
+  return template(info);
 };
 
 const formatMessage = result => {

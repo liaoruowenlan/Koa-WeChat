@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "ejs": "^2.6.1",
     "koa": "^2.7.0",
     "raw-body": "^2.3.3",
     "sha1": "^1.1.1",
