@@ -27,13 +27,15 @@ module.exports = (config, reply) => {
 
       const message = util.formatMessage(content.xml);
 
+      //获取微信传递过来的xml。
       ctx.weixin = message;
+
+      //绑定上下文传递至中间件。
       await reply.apply(ctx, [ctx, next]);
 
       ctx.status = 200;
       ctx.type = "application/xml";
       const replyBody = ctx.body;
-      //获取微信传递过来的数据。
       const msg = ctx.weixin;
       //渲染模板引擎。
       const xml = util.tpl(replyBody, msg);
