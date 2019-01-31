@@ -18,7 +18,7 @@ exports.tpl = function(content, message) {
   }
   if (!content) content = "Empty News";
 
-  if (content && content.type) {
+  if (content.type) {
     type = content.type;
   }
   let info = Object.assign(
@@ -31,6 +31,7 @@ exports.tpl = function(content, message) {
       fromUserName: message.ToUserName
     }
   );
+  //此处获取tpl里的模板。
   return template(info);
 };
 

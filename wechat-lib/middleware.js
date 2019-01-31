@@ -33,7 +33,9 @@ module.exports = (config, reply) => {
       ctx.status = 200;
       ctx.type = "application/xml";
       const replyBody = ctx.body;
+      //获取微信传递过来的数据。
       const msg = ctx.weixin;
+      //渲染模板引擎。
       const xml = util.tpl(replyBody, msg);
       ctx.body = xml;
     }
