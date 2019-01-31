@@ -9,7 +9,8 @@ module.exports = class Wechat {
     this.opts = Object.assign({}, opts);
     this.appID = opts.appID;
     this.appSecret = opts.appSecret;
-
+    this.getAccessToken = opts.getAccessToken;
+    this.saveAccessToken = opts.saveAccessToken;
     //默认发出token请求。
     this.fetchAccessToken();
   }
@@ -23,27 +24,27 @@ module.exports = class Wechat {
     }
   }
   //发送请求时拼接id。secret的url地址。
+  //首先检查数据库里的token是否过期。
+  //过期则刷新。
+  //token入库。
   async fetchAccessToken() {
-    let data;
-    if (this.getAccessToken) {
-      data = await this.getAccessToken();
-    }
+    let data = await this.getAccessToken();
     if (!this.isValidToken(data)) {
       data = await this.updateAccessToken();
     }
+    //存储token。
+    await this.saveAccessToken(data);
     return data;
   }
-  //修改请求token时间。返回新的数据。
+  //获取token
   async updateAccessToken() {
     const url = `${api.accessToken}&appid=${this.appID}&secret=${
       this.appSecret
     }`;
     const data = await this.request({ url });
-    console.log(data);
     const now = new Date().getTime();
     const expiresIn = now + (data.expires_in - 20) * 1000;
     data.expires_in = expiresIn;
-    console.log(data);
     return data;
   }
   isValidToken(data) {

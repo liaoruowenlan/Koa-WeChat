@@ -4,8 +4,20 @@ const wechat = require("./wechat-lib/middleware");
 //此处判断用户发送过来文本，返回相对应信息。
 const { reply } = require("./wechat/reply");
 
-const app = new Koa();
+const { initSchemas, connect } = require("./app/database/init");
 
-app.use(wechat(config.wechat, reply));
+(async () => {
+  await connect(config.db);
 
-app.listen(config.port);
+  initSchemas();
+
+  //测试 token 存储。
+  const { test } = require("./wechat/index");
+  await test();
+
+  const app = new Koa();
+
+  app.use(wechat(config.wechat, reply));
+
+  app.listen(config.port);
+})();
